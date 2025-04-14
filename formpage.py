@@ -12,7 +12,7 @@ st.set_page_config(
 # Load logo
 st.image("logo.jpg", width=300)
 
-st.title("LWR – Document Submission Request")
+st.title("LWR – Document Submission Request - TEST")
 
 
 
