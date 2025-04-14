@@ -5,7 +5,7 @@ from importrequests import *
 
 # Set the page configuration
 st.set_page_config(
-    page_title="LWR - Document Submission",  # Tab title
+    page_title="LWR - Document Submission - TEST",  # Tab title
     page_icon=":page_facing_up:",
 )
 
