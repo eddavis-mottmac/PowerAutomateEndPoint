@@ -5,98 +5,107 @@ from importrequests import *
 
 # Set the page configuration
 st.set_page_config(
-    page_title="LWR - Document Submission - TEST",  # Tab title
+    page_title="LWR - Document Submission",  # Tab title
     page_icon=":page_facing_up:",
 )
 
 # Load logo
 st.image("logo.jpg", width=300)
 
-st.title("LWR – Document Submission Request - TEST")
-
-
-
-# Apply CSS for minimalist design
-st.markdown("""
-    <style>
-    .main {
-        background-color: #f5f5f5;
-        padding: 20px;
-        border-radius: 10px;
-    }
-    .stButton button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+st.title("LWR – Document Submission Request")
 
 # Main container
 with st.container():
     
     st.subheader("1) Email*")
-    email = st.text_input("Submitter's Email Address:")
+    if 'email' not in st.session_state:
+        st.session_state.email = ''
+    email = st.text_input("Submitter's Email Address:", value=st.session_state.email)
 
-    # Table 1   
-    st.subheader("2) MIDP Check*")
-    url = r"https://app.powerbi.com/groups/me/apps/64f8028b-7510-4069-8b8d-f3ba70f53d38/reports/e095f418-8cfd-4504-b8d6-54d3cf7ea9af/c47fc146c7a267925009?ctid=a2bed0c4-5957-4f73-b0c2-a811407590fb&experience=power-bi&bookmarkGuid=b12e777100e1567d8ccc"
-    midp_confirmation = st.radio(
-        "Please confirm the documents to be issued are included in the [MIDP](%s):" % url,
-        ("Confirmed"),
-        index=None
+    # Table 9
+    st.subheader("2) Project Contract*")
+    if 'contract' not in st.session_state:
+        st.session_state.reason_for_issue = "TEDD - Teddington"
+    reason_for_issue = st.radio("Please choose one option for the whole package:", ("TEDD - Teddington", "BECK - Bectkon"),
+    index=0
     )
 
     # Table 2
-    st.subheader("3) Submission Title*")
-    submission_title = st.text_input("Please provide the Submission Title:")
-
-    # Table 3
-    st.subheader("4) Document Container Set on PW (URN)*")
-    document_container_set = st.text_input("Please provide a link to the Document of Document Set on Projectwise (URN):")
+    st.subheader("2) Transmittal Title*")
+    if 'submission_title' not in st.session_state:
+        st.session_state.submission_title = ''
+    submission_title = st.text_input("Please provide the Transmittal Title:", value=st.session_state.submission_title)
 
     # Table 9
-    st.subheader("5) Reason for Issue*")
-    reason_for_issue = st.radio("What is the Reason for Issue:", ("S2 (For information) - Used to begin co-authoring DCO submission documents", "S5 – (For Client Review & Acceptance)"),
+    st.subheader("3) Reason for Issue*")
+    if 'reason_for_issue' not in st.session_state:
+        st.session_state.reason_for_issue = "S2 (For information) - Used to begin co-authoring DCO submission documents"
+    reason_for_issue = st.radio("Please choose one option for the whole package. If you need to add supporting files for information, specify this in the transmittal comment section:", ("S2 (For information) - Used to begin co-authoring DCO submission documents", "S5 – (For Client Review & Acceptance)"),
     index=1
     )
 
-    # Table 10
-    st.subheader("6) Additional Notes")
-    additional_notes = st.text_area("Please provide any Additional Notes for Document Control:")
 
-    # Initialize session state for the table
-    if 'table_data' not in st.session_state:
-        st.session_state.table_data = [{"Email": "LWRInformationManagement@mottmac.com"}]
-
-    # Function to add a new row
-    def add_row():
-        st.session_state.table_data.append({"Email": ""})
 
     # Display the table
-    st.subheader("7) Distribution List*")
-    st.write("Add email addresses to be notified upon submission:")
+    st.subheader("4) Documents for Issue*")
+    st.write("Please add the details of the documents you are submitting:")
+    doc_df = pd.DataFrame(
+        [
+        {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-XXXXXX', 'Document Title': 'Replace Me', 'Link to Native File': 'www.google.com', 'Digital CRAV Completed': False, 'Link to PDF': 'www.google.com'}
+    ]
+    )
+    doc_edited_df = st.data_editor(doc_df, num_rows="dynamic", column_config={
+        "Link to Native File": st.column_config.LinkColumn(
+            "Link to Native File",
+            help="The top trending Streamlit apps",
+            validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
+            max_chars=255,
+            display_text=r"https://(.*?)\.streamlit\.app"
+        ),
+        "Link to PDF": st.column_config.LinkColumn(
+            "Link to PDF",
+            help="The top trending Streamlit apps",
+            validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
+            max_chars=255,
+            display_text=r"https://(.*?)\.streamlit\.app"
+        )
+    })
+
+
+    # Distribution List Table
+    # Display the table
+    st.subheader("5) Distribution Lists")
+    st.write("Add Thames Water email addresses to notified for approval/review of the documents:")
 
     # Create a DataFrame from the session state data
-    df = pd.DataFrame(st.session_state.table_data)
+    dist_rev_df = pd.DataFrame([{"Email": ""}])
+    table_edited_df = st.data_editor(dist_rev_df, num_rows="dynamic")
 
-    # Display the table with editable cells
-    edited_df = st.data_editor(df, hide_index=True)
+    st.write("Add any other email addresses to notified of this package submission:")
 
-    # Update the session state with the edited data
-    st.session_state.table_data = edited_df.to_dict('records')
-        # Add a button to add new rows
-    if st.button("Add Row"):
-        add_row()
+    # Create a DataFrame from the session state data
+    dist_df = pd.DataFrame([{"Email": "LWRInformationManagement@mottmac.com"}])
+    dist_edited_df = st.data_editor(dist_df, num_rows="dynamic")
 
+    # Table 1   
+    st.subheader("6) Please confirm you have completed the necessary Quality Assurance checks*")
+    
+    url = r"https://app.powerbi.com/groups/me/apps/64f8028b-7510-4069-8b8d-f3ba70f53d38/reports/e095f418-8cfd-4504-b8d6-54d3cf7ea9af/c47fc146c7a267925009?ctid=a2bed0c4-5957-4f73-b0c2-a811407590fb&experience=power-bi&bookmarkGuid=b12e777100e1567d8ccc"
+    # List of checks
+    items = [f"All listed document numbers are registered in [MIDP](%s):" % url, 'All listed documents have successfully passed the checker-reviewer-approver workflow in either SharePoint or ProjectWise', 'The names listed for CRAV within all listed documents match those in the digital workflow', 'All listed documents reference the correct revision throughout the document', 'All documents listed have the correct security classification', 'All listed documents (exluding models/drawings) headers contain the correct document number and revision', 'All listed documents (exclusing models/drawings) footers contain the correct document title, security classification and page number']
+
+    
+    # Create checkboxes for each item
+    selected_items = []
+    for item in items:
+        if st.checkbox(item):
+            selected_items.append(item)
+
+        # Table 10
+    st.subheader("7) Transmittal Comments")
+    if 'additional_notes' not in st.session_state:
+        st.session_state.additional_notes = ''
+    additional_notes = st.text_area("Supporting comments to be displayed on Transmittal Cover note or for Document Control information:", value=st.session_state.additional_notes)
 
 # Submit button
 if st.button("Submit"):
@@ -110,29 +119,21 @@ if st.button("Submit"):
         email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
         if not email_pattern.match(email):
             errors.append(f"Invalid email address: {email}")
-    if not midp_confirmation:
-        errors.append("MIDP check is required.")
+    if not len(selected_items) == 7:
+        errors.append("Quality Assurance checks must be completed.")
     if not submission_title:
         errors.append("Submission Title is required.")
-    if not document_container_set:
-        errors.append("Document Container Set on PW (URN) is required.")
-    else:
-        # Validate URL
-        url_pattern = re.compile(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+")
-        if not url_pattern.match(document_container_set):
-            errors.append("Document Container Set on PW (URN) must be a valid URL.")
     if not reason_for_issue:
         errors.append("Reason for Issue is required.")
-    if not st.session_state.table_data:
+    if len(table_edited_df)==0:
         errors.append("At least one email address is required in the Distribution List.")
 
     # Validate email addresses
     email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
-    for row in st.session_state.table_data:
-        if not email_pattern.match(row["Email"]) and row['Email'] != '':
-            errors.append(f"Invalid email address: {row['Email']}")
-
-
+    for index, row in table_edited_df.iterrows():
+        email = row["Email"]
+        if not email_pattern.match(email) and email != '':
+            errors.append(f"Invalid email address: {email}")
 
     if errors:
         for error in errors:
@@ -141,21 +142,17 @@ if st.button("Submit"):
         # Collect all data into a dictionary
         form_data = {
             "Submitters Email": email,
-            "MIDP Confirmation": midp_confirmation,
             "Submission Title": submission_title,
-            "Document Container Set on PW (URN)": document_container_set,
             "Reason for Issue": reason_for_issue,
             "Additional Notes": additional_notes,
-            "Distribution List": [row["Email"] for row in st.session_state.table_data]
+            "Documents for Issue": doc_edited_df.to_dict()
         }
-        
         
         submitform(form_data)
         st.success("Form submitted successfully!")
 
         # Clear all fields
         st.session_state.email = ""
-        st.session_state.midp_confirmation = None
         st.session_state.submission_title = ""
         st.session_state.document_container_set = ""
         st.session_state.reason_for_issue = "S2 (For information) - Used to begin co-authoring DCO submission documents"
