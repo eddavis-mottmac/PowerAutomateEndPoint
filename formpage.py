@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import re
 from importrequests import *
+import json
+
+
 
 # Set the page configuration
 st.set_page_config(
@@ -25,8 +28,8 @@ with st.container():
     # Table 9
     st.subheader("2) Project Contract*")
     if 'contract' not in st.session_state:
-        st.session_state.reason_for_issue = "TEDD - Teddington"
-    reason_for_issue = st.radio("Please choose one option for the whole package:", ("TEDD - Teddington", "BECK - Bectkon"),
+        st.session_state.contract = "TEDD - Teddington"
+    contract = st.radio("Please choose one option for the whole package:", ("TEDD - Teddington", "BECK - Bectkon"),
     index=0
     )
 
@@ -131,23 +134,36 @@ if st.button("Submit"):
     # Validate email addresses
     email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
     for index, row in table_edited_df.iterrows():
-        email = row["Email"]
-        if not email_pattern.match(email) and email != '':
-            errors.append(f"Invalid email address: {email}")
+        dist_emails = row["Email"]
+        if not email_pattern.match(dist_emails) and dist_emails != '':
+            errors.append(f"Invalid email address: {dist_emails}")
 
     if errors:
         for error in errors:
             st.error(error)
     else:
         # Collect all data into a dictionary
+
+        documents = {
+            "Documents Numbers": doc_edited_df['Document Number'].tolist(),
+            "Documents Titles": doc_edited_df['Document Title'].tolist(),
+            "Native Links": doc_edited_df['Link to Native File'].tolist(),
+            "PDF Links": doc_edited_df['Link to PDF'].tolist()
+        }
+
+
         form_data = {
             "Submitters Email": email,
+            "Contract": contract.split("-")[0].replace(" ",""),
             "Submission Title": submission_title,
             "Reason for Issue": reason_for_issue,
-            "Additional Notes": additional_notes,
-            "Documents for Issue": doc_edited_df.to_dict()
+            "Documents": documents,
+            "Distribution List Reviewers": table_edited_df['Email'].tolist(),
+            "Distribution List For Info": dist_edited_df['Email'].tolist(),
+            "Additional Notes": additional_notes
         }
-        
+
+       
         submitform(form_data)
         st.success("Form submitted successfully!")
 
