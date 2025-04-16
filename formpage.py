@@ -54,7 +54,7 @@ with st.container():
     st.write("Please add the details of the documents you are submitting:")
     doc_df = pd.DataFrame(
         [
-        {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-XXXXXX', 'Document Title': 'Replace Me', 'Link to Native File': 'www.google.com', 'Digital CRAV Completed': False, 'Link to PDF': 'www.google.com'}
+        {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-XXXXXX', 'Document Title': 'Example Document - Please Replace line', 'Link to Native File': 'www.google.com', 'Digital CRAV Completed': False, 'Link to PDF': 'www.google.com'}
     ]
     )
     doc_edited_df = st.data_editor(doc_df, num_rows="dynamic", column_config={
@@ -87,7 +87,7 @@ with st.container():
     st.write("Add any other email addresses to notified of this package submission:")
 
     # Create a DataFrame from the session state data
-    dist_df = pd.DataFrame([{"Email": "LWRInformationManagement@mottmac.com"}])
+    dist_df = pd.DataFrame([{"Email": "LWRDocumentControl@mottmac.com"}])
     dist_edited_df = st.data_editor(dist_df, num_rows="dynamic")
 
     # Table 1   
