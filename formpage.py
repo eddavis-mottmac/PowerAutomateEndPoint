@@ -9,7 +9,9 @@ from importrequests import *
 st.set_page_config(
     page_title="LWR - Document Submission",  # Tab title
     page_icon=":page_facing_up:",
+    layout="wide",
 )
+
 
 # Load logo
 st.image("logo.jpg", width=300)
@@ -42,36 +44,81 @@ with st.container():
     st.subheader("3) Reason for Issue*")
     if 'reason_for_issue' not in st.session_state:
         st.session_state.reason_for_issue = "S2 (For information) - Used to begin co-authoring DCO submission documents"
-    reason_for_issue = st.radio("Please choose one option for the whole package. If you need to add supporting files for information, specify this in the transmittal comment section:", ("S2 (For information) - Used to begin co-authoring DCO submission documents", "S5 – (For Client Review & Acceptance)"),
+    reason_for_issue = st.radio("Please choose one option for the whole package. If you need to include supporting files for information, you will be able to specify this later in the form:", ("S2 (For information) - Used to begin co-authoring DCO submission documents", "S5 – (For Client Review & Acceptance)"),
     index=1
     )
 
-
-
-    # Display the table
+    
+    # Ask the initial question
     st.subheader("4) Documents for Issue*")
-    st.write("Please add the details of the documents you are submitting:")
-    doc_df = pd.DataFrame(
-        [
-        {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-XXXXXX', 'Document Title': 'Example Document - Please Replace line', 'Link to Native File': 'www.google.com', 'Digital CRAV Completed': False, 'Link to PDF': 'www.google.com'}
-    ]
-    )
-    doc_edited_df = st.data_editor(doc_df, num_rows="dynamic", column_config={
-        "Link to Native File": st.column_config.LinkColumn(
-            "Link to Native File",
-            help="The top trending Streamlit apps",
-            validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
-            max_chars=255,
-            display_text=r"https://(.*?)\.streamlit\.app"
-        ),
-        "Link to PDF": st.column_config.LinkColumn(
-            "Link to PDF",
-            help="The top trending Streamlit apps",
-            validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
-            max_chars=255,
-            display_text=r"https://(.*?)\.streamlit\.app"
+    CDE = st.radio("Are you submitting Information held on Sharepoint or Projectwise?", ("Sharepoint", "Projectwise"))
+
+    # Display the next question based on the previous response
+    if CDE == "Sharepoint":
+        # Display the table
+        st.write("Please add the details of the documents you are submitting:")
+        doc_df = pd.DataFrame(
+            [
+            {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-000000', 'Document Title': 'Example Document - Please Replace line', 'Link to Native File': 'https://www.example.com/', 'Digital CRAV Completed': False, 'Link to PDF': 'https://www.example.com/'}
+        ]
         )
-    })
+        doc_edited_df = st.data_editor(doc_df, num_rows="dynamic", column_config={
+            "Link to Native File": st.column_config.LinkColumn(
+                "Link to Native File",
+                help="Link to the native file e.g. the word document file. This must have completed digital CRAV",
+                validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
+                max_chars=255,
+                display_text=r"https://(.*?)\.streamlit\.app"
+            ),
+            "Link to PDF": st.column_config.LinkColumn(
+                "Link to PDF",
+                help="Link to a PDF'd version of the native file, this is not required to be CRAV'd",
+                validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
+                max_chars=255,
+                display_text=r"https://(.*?)\.streamlit\.app"
+            ),
+            "Document Number": st.column_config.TextColumn(
+                "Document Number",
+                help="Please enter the document number as listed in the MIDP. Invalid document numbers will not be accepted.",
+                validate=r"^J698-JMM-[A-Za-z0-9]{4}-[A-Za-z0-9]{4,8}-[A-Za-z0-9]{2}-[A-Za-z0-9]{2}-\d{6}$"
+            )
+        })
+
+
+        # Supporting Documents
+        st.write("Include details of supporting documents within your main document, such as PEIR maps within the PEIR or calculations within the appendix of a report. These need to be CRAV'd but will only be issued to the client at S2 (For Information):")
+        sup_doc_df = pd.DataFrame(
+            [
+            {'Document Number': '', 'Document Title': '', 'Link to Native File': '', 'Digital CRAV Completed': False, 'Link to PDF': ''}
+        ]
+        )
+        sup_doc_edited_df = st.data_editor(sup_doc_df, num_rows="dynamic", column_config={
+            "Link to Native File": st.column_config.LinkColumn(
+                "Link to Native File",
+                help="Link to the native file e.g. the word document file. This must have completed digital CRAV",
+                validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
+                max_chars=255,
+                display_text=r"https://(.*?)\.streamlit\.app"
+            ),
+            "Link to PDF": st.column_config.LinkColumn(
+                "Link to PDF",
+                help="Link to a PDF'd version of the native file, this is not required to be CRAV'd",
+                validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
+                max_chars=255,
+                display_text=r"https://(.*?)\.streamlit\.app"
+            ),
+            "Document Number": st.column_config.TextColumn(
+                "Document Number",
+                help="Please enter the document number as listed in the MIDP. Invalid document numbers will not be accepted.",
+                validate=r"^J698-JMM-[A-Za-z0-9]{4}-[A-Za-z0-9]{4,8}-[A-Za-z0-9]{2}-[A-Za-z0-9]{2}-\d{6}$"
+            )
+        }, key="unique_key_1")
+    
+    else:
+        st.write("Please place the documents in a Projectwise List and provide a link:")
+        if 'doc_set' not in st.session_state:
+            st.session_state.doc_set = ''
+        doc_set = st.text_input("Please ensure that all documents within the list have the correct status (Use S5 to trigger Client Review and Comment, and S2 if issuing for information only or if the document is supporting information e.g. A calculation within the appendix of the main report):", value=st.session_state.doc_set, placeholder="https://example.com")
 
 
     # Distribution List Table
@@ -80,14 +127,14 @@ with st.container():
     st.write("Add Thames Water email addresses to notified for approval/review of the documents:")
 
     # Create a DataFrame from the session state data
-    dist_rev_df = pd.DataFrame([{"Email": ""}])
-    table_edited_df = st.data_editor(dist_rev_df, num_rows="dynamic")
-
-    st.write("Add any other email addresses to notified of this package submission:")
-
-    # Create a DataFrame from the session state data
-    dist_df = pd.DataFrame([{"Email": "LWRDocumentControl@mottmac.com"}])
-    dist_edited_df = st.data_editor(dist_df, num_rows="dynamic")
+    dist_rev_df = pd.DataFrame([{"Email": "LWRDocumentControl@mottmac.com", "Role": "For Information"}])
+    table_edited_df = st.data_editor(dist_rev_df, num_rows="dynamic", column_config={
+        "Role": st.column_config.SelectboxColumn(
+            "Role",
+            help="Specify if this person should be notified for information only or included as a client reviewer (Thames Water employees only)",
+            options = ["For Information", "For Client Review"]
+        )
+    }, width=750)
 
     # Table 1   
     st.subheader("6) Please confirm you have completed the necessary Quality Assurance checks*")
@@ -143,28 +190,47 @@ if st.button("Submit"):
     else:
         # Collect all data into a dictionary
 
-        documents = {
-            "Documents Numbers": doc_edited_df['Document Number'].tolist(),
-            "Documents Titles": doc_edited_df['Document Title'].tolist(),
-            "Native Links": doc_edited_df['Link to Native File'].tolist(),
-            "PDF Links": doc_edited_df['Link to PDF'].tolist()
+        if CDE == 'Sharepoint':
+            documents = {
+                "Documents Numbers": doc_edited_df['Document Number'].tolist(),
+                "Documents Titles": doc_edited_df['Document Title'].tolist(),
+                "Native Links": doc_edited_df['Link to Native File'].tolist(),
+                "PDF Links": doc_edited_df['Link to PDF'].tolist()
+            }
+
+            sup_documents = {
+                "Documents Numbers": sup_doc_edited_df['Document Number'].tolist(),
+                "Documents Titles": sup_doc_edited_df['Document Title'].tolist(),
+                "Native Links": sup_doc_edited_df['Link to Native File'].tolist(),
+                "PDF Links": sup_doc_edited_df['Link to PDF'].tolist()
+            }
+            doc_set=''
+        else:
+            documents = ''
+            sup_documents =''
+
+        Distribution_List = {
+            "Emails": table_edited_df['Email'].tolist(),
+            "Review/For Information": table_edited_df['Role'].tolist()
         }
 
 
         form_data = {
             "Submitters Email": email,
             "Contract": contract.split("-")[0].replace(" ",""),
+            "CDE": CDE,
+            "Projectwise Link": doc_set,
             "Submission Title": submission_title,
             "Reason for Issue": reason_for_issue,
             "Documents": documents,
-            "Distribution List Reviewers": table_edited_df['Email'].tolist(),
-            "Distribution List For Info": dist_edited_df['Email'].tolist(),
+            "Supporting Documents": sup_documents,
+            "Distribution List Reviewers": Distribution_List,
             "Additional Notes": additional_notes
         }
 
        
         submitform(form_data)
-        st.success("Form submitted successfully!")
+        st.success("Thank you, you have successfully submitted the form! You shall receieve a confirmation email shortly.")
 
         # Clear all fields
         st.session_state.email = ""
