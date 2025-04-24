@@ -206,8 +206,19 @@ if st.button("Submit"):
             }
             doc_set=''
         else:
-            documents = ''
-            sup_documents =''
+            documents = {
+                "Documents Numbers": [],
+                "Documents Titles": [],
+                "Native Links": [],
+                "PDF Links": []
+            }
+
+            sup_documents = {
+                "Documents Numbers": [],
+                "Documents Titles": [],
+                "Native Links": [],
+                "PDF Links": []
+            }
 
         Distribution_List = {
             "Emails": table_edited_df['Email'].tolist(),
@@ -230,6 +241,7 @@ if st.button("Submit"):
 
        
         submitform(form_data)
+        print(form_data)
         st.success("Thank you, you have successfully submitted the form! You shall receieve a confirmation email shortly.")
 
         # Clear all fields
@@ -239,3 +251,4 @@ if st.button("Submit"):
         st.session_state.reason_for_issue = "S2 (For information) - Used to begin co-authoring DCO submission documents"
         st.session_state.additional_notes = ""
         st.session_state.table_data = [{"Email": "LWRInformationManagement@mottmac.com"}]
+

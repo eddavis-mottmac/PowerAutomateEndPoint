@@ -10,5 +10,7 @@ def submitform(data):
         'Accept': 'application/json'
     }
 
-    requests.post(url, json=data, headers=headers)
+    response = requests.post(url, json=data, headers=headers)
+    print(response)
+
 
