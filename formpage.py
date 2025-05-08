@@ -35,13 +35,13 @@ with st.container():
     )
 
     # Table 2
-    st.subheader("2) Transmittal Title*")
+    st.subheader("3) Transmittal Title*")
     if 'submission_title' not in st.session_state:
         st.session_state.submission_title = ''
     submission_title = st.text_input("Please provide the Transmittal Title:", value=st.session_state.submission_title)
 
     # Table 9
-    st.subheader("3) Reason for Issue*")
+    st.subheader("4) Reason for Issue*")
     if 'reason_for_issue' not in st.session_state:
         st.session_state.reason_for_issue = "S2 (For information) - Used to begin co-authoring DCO submission documents"
     reason_for_issue = st.radio("Please choose one option for the whole package. If you need to include supporting files for information, you will be able to specify this later in the form:", ("S2 (For information) - Used to begin co-authoring DCO submission documents", "S5 – (For Client Review & Acceptance)"),
@@ -50,7 +50,7 @@ with st.container():
 
     
     # Ask the initial question
-    st.subheader("4) Documents for Issue*")
+    st.subheader("5) Documents for Issue*")
     CDE = st.radio("Are you submitting Information held on Sharepoint or Projectwise?", ("Sharepoint", "Projectwise"))
 
     # Display the next question based on the previous response
@@ -123,7 +123,7 @@ with st.container():
 
     # Distribution List Table
     # Display the table
-    st.subheader("5) Distribution Lists")
+    st.subheader("6) Distribution Lists")
     st.write("Add Thames Water email addresses to notified for approval/review of the documents:")
 
     # Create a DataFrame from the session state data
@@ -137,7 +137,7 @@ with st.container():
     }, width=750)
 
     # Table 1   
-    st.subheader("6) Please confirm you have completed the necessary Quality Assurance checks*")
+    st.subheader("7) Please confirm you have completed the necessary Quality Assurance checks*")
     
     url = r"https://app.powerbi.com/groups/me/apps/64f8028b-7510-4069-8b8d-f3ba70f53d38/reports/e095f418-8cfd-4504-b8d6-54d3cf7ea9af/c47fc146c7a267925009?ctid=a2bed0c4-5957-4f73-b0c2-a811407590fb&experience=power-bi&bookmarkGuid=b12e777100e1567d8ccc"
     # List of checks
@@ -151,7 +151,7 @@ with st.container():
             selected_items.append(item)
 
         # Table 10
-    st.subheader("7) Transmittal Comments")
+    st.subheader("8) Transmittal Comments")
     if 'additional_notes' not in st.session_state:
         st.session_state.additional_notes = ''
     additional_notes = st.text_area("Supporting comments to be displayed on Transmittal Cover note or for Document Control information:", value=st.session_state.additional_notes)
