@@ -127,7 +127,7 @@ with st.container():
     st.write("Add Thames Water email addresses to notified for approval/review of the documents:")
 
     # Create a DataFrame from the session state data
-    dist_rev_df = pd.DataFrame([{"Email": "LWRDocumentControl@mottmac.com", "Role": "For Information"}])
+    dist_rev_df = pd.DataFrame([{"Email": "LWRDocumentControl@jacobs.com", "Role": "For Information"}])
     table_edited_df = st.data_editor(dist_rev_df, num_rows="dynamic", column_config={
         "Role": st.column_config.SelectboxColumn(
             "Role",
