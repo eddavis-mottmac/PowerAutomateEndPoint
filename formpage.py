@@ -240,9 +240,11 @@ if st.button("Submit"):
         }
 
        
-        submitform(form_data)
-        print(form_data)
-        st.success("Thank you, you have successfully submitted the form! You shall receieve a confirmation email shortly.")
+        response = submitform(form_data)
+        if response.status_code == 200:
+            st.success("Thank you, you have successfully submitted the form! You shall receieve a confirmation email shortly.")
+        else:
+            st.error(f"{response.status_code} error code, please contact systems administrator")
 
         # Clear all fields
         st.session_state.email = ""
