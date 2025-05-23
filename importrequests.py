@@ -11,7 +11,6 @@ def submitform(data):
     }
 
     response = requests.post(url, json=data, headers=headers)
-    print(response)
     return response
 
 
