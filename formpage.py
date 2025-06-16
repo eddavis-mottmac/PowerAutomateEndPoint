@@ -162,20 +162,23 @@ if st.button("Submit"):
 
     # Ensure all required fields are filled
     if not email:
-        errors.append("Email is required.")
+        errors.append("Question 1: Email is required.")
     else:
         # Validate email addresses
         email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
         if not email_pattern.match(email):
-            errors.append(f"Invalid email address: {email}")
-    if not len(selected_items) == 7:
-        errors.append("Quality Assurance checks must be completed.")
+            errors.append(f"Question 1: Invalid email address: {email}")
     if not submission_title:
-        errors.append("Submission Title is required.")
+        errors.append("Question 3: Submission Title is required.")
     if not reason_for_issue:
-        errors.append("Reason for Issue is required.")
+        errors.append("Question 4: Reason for Issue is required.")
+
+    if any(not x for x in doc_edited_df['Digital CRAV Completed'].tolist()):
+        errors.append("Question 5: All Documents for issue must have Digital CRAV Completed")
     if len(table_edited_df)==0:
-        errors.append("At least one email address is required in the Distribution List.")
+        errors.append("Question 6: At least one email address is required in the Distribution List.")
+    if not len(selected_items) == 7:
+        errors.append("Question 7: Quality Assurance checks must be completed.")
 
     # Validate email addresses
     email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
