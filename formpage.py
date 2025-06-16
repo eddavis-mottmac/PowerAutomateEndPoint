@@ -51,10 +51,10 @@ with st.container():
     
     # Ask the initial question
     st.subheader("5) Documents for Issue*")
-    CDE = st.radio("Are you submitting Information held on Sharepoint or Projectwise?", ("Sharepoint", "Projectwise"))
+    CDE = st.radio("Documents can only be issued from ProjectWise. Please choose one of the following options:", ("List each document individually below", "Submit a link to a ProjectWise list"))
 
     # Display the next question based on the previous response
-    if CDE == "Sharepoint":
+    if CDE == "List each document individually below":
         # Display the table
         st.write("Please add the details of the documents you are submitting:")
         doc_df = pd.DataFrame(
@@ -91,7 +91,7 @@ with st.container():
             [
             {'Document Number': '', 'Document Title': '', 'Link to Native File': '', 'Digital CRAV Completed': False, 'Link to PDF': ''}
         ]
-        )
+        ).iloc[1:].reset_index(drop=True)
         sup_doc_edited_df = st.data_editor(sup_doc_df, num_rows="dynamic", column_config={
             "Link to Native File": st.column_config.LinkColumn(
                 "Link to Native File",
@@ -141,7 +141,7 @@ with st.container():
     
     url = r"https://app.powerbi.com/groups/me/apps/64f8028b-7510-4069-8b8d-f3ba70f53d38/reports/e095f418-8cfd-4504-b8d6-54d3cf7ea9af/c47fc146c7a267925009?ctid=a2bed0c4-5957-4f73-b0c2-a811407590fb&experience=power-bi&bookmarkGuid=b12e777100e1567d8ccc"
     # List of checks
-    items = [f"All listed document numbers are registered in [MIDP](%s):" % url, 'All listed documents have successfully passed the checker-reviewer-approver workflow in either SharePoint or ProjectWise', 'The names listed for CRAV within all listed documents match those in the digital workflow', 'All listed documents reference the correct revision throughout the document', 'All documents listed have the correct security classification', 'All listed documents (exluding models/drawings) headers contain the correct document number and revision', 'All listed documents (exclusing models/drawings) footers contain the correct document title, security classification and page number']
+    items = [f"All listed document numbers are registered in [MIDP](%s):" % url, 'All listed documents have successfully passed the checker-reviewer-approver workflow in ProjectWise', 'The names listed for CRAV within all listed documents match those in the digital workflow', 'All listed documents reference the correct revision throughout the document', 'All documents listed have the correct security classification', 'All listed documents (exluding models/drawings) headers contain the correct document number and revision', 'All listed documents (exclusing models/drawings) footers contain the correct document title, security classification and page number']
 
     
     # Create checkboxes for each item
@@ -190,7 +190,7 @@ if st.button("Submit"):
     else:
         # Collect all data into a dictionary
 
-        if CDE == 'Sharepoint':
+        if CDE == 'List each document individually below':
             documents = {
                 "Documents Numbers": doc_edited_df['Document Number'].tolist(),
                 "Documents Titles": doc_edited_df['Document Title'].tolist(),
