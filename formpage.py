@@ -43,7 +43,7 @@ with st.container():
     # Table 9
     st.subheader("4) Reason for Issue*")
     if 'reason_for_issue' not in st.session_state:
-        st.session_state.reason_for_issue = "S2 (For information) - Used to begin co-authoring DCO submission documents"
+        st.session_state.reason_for_issue = "S2 (For information) - Document will not be reviewed by client"
     reason_for_issue = st.radio("Please choose one option for the whole package. If you need to include supporting files for information, you will be able to specify this later in the form:", ("S2 (For information) - Used to begin co-authoring DCO submission documents", "S5 – (For Client Review & Acceptance)"),
     index=1
     )
