@@ -59,7 +59,7 @@ with st.container():
         st.write("Please add the details of the documents you are submitting:")
         doc_df = pd.DataFrame(
             [
-            {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-000000', 'Document Title': 'Example Document - Please Replace line', 'Link to Native File': 'https://www.example.com/', 'Digital CRAV Completed': False, 'Link to PDF': 'https://www.example.com/'}
+            {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-000000', 'Document Title': 'Example Document - Please Replace line', 'Link to Native File': 'https://www.example.com/', 'Digital CRAV Completed': False, 'Link to PDF (Use Native File Link if N/A)': 'https://www.example.com/'}
         ]
         )
         doc_edited_df = st.data_editor(doc_df, num_rows="dynamic", column_config={
@@ -70,8 +70,8 @@ with st.container():
                 max_chars=255,
                 display_text=r"https://(.*?)\.streamlit\.app"
             ),
-            "Link to PDF": st.column_config.LinkColumn(
-                "Link to PDF",
+            "Link to PDF (Use Native File Link if N/A)": st.column_config.LinkColumn(
+                "Link to PDF (Use Native File Link if N/A)",
                 help="Link to a PDF'd version of the native file, this is not required to be CRAV'd",
                 validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
                 max_chars=255,
@@ -89,7 +89,7 @@ with st.container():
         st.write("Include details of supporting documents within your main document, such as PEIR maps within the PEIR or calculations within the appendix of a report. These need to be CRAV'd but will only be issued to the client at S2 (For Information):")
         sup_doc_df = pd.DataFrame(
             [
-            {'Document Number': '', 'Document Title': '', 'Link to Native File': '', 'Digital CRAV Completed': False, 'Link to PDF': ''}
+            {'Document Number': '', 'Document Title': '', 'Link to Native File': '', 'Digital CRAV Completed': False, 'Link to PDF (Use Native File Link if N/A)': ''}
         ]
         ).iloc[1:].reset_index(drop=True)
         sup_doc_edited_df = st.data_editor(sup_doc_df, num_rows="dynamic", column_config={
@@ -100,9 +100,9 @@ with st.container():
                 max_chars=255,
                 display_text=r"https://(.*?)\.streamlit\.app"
             ),
-            "Link to PDF": st.column_config.LinkColumn(
-                "Link to PDF",
-                help="Link to a PDF'd version of the native file, this is not required to be CRAV'd",
+            "Link to PDF (Use Native File Link if N/A)": st.column_config.LinkColumn(
+                "Link to PDF (Use Native File Link if N/A)",
+                help="Link to a PDF'd version of the native file for Document Control to submit with the native file. This is not required to be CRAV'd",
                 validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
                 max_chars=255,
                 display_text=r"https://(.*?)\.streamlit\.app"
@@ -198,14 +198,14 @@ if st.button("Submit"):
                 "Documents Numbers": doc_edited_df['Document Number'].tolist(),
                 "Documents Titles": doc_edited_df['Document Title'].tolist(),
                 "Native Links": doc_edited_df['Link to Native File'].tolist(),
-                "PDF Links": doc_edited_df['Link to PDF'].tolist()
+                "PDF Links": doc_edited_df['Link to PDF (Use Native File Link if N/A)'].tolist()
             }
 
             sup_documents = {
                 "Documents Numbers": sup_doc_edited_df['Document Number'].tolist(),
                 "Documents Titles": sup_doc_edited_df['Document Title'].tolist(),
                 "Native Links": sup_doc_edited_df['Link to Native File'].tolist(),
-                "PDF Links": sup_doc_edited_df['Link to PDF'].tolist()
+                "PDF Links": sup_doc_edited_df['Link to PDF (Use Native File Link if N/A)'].tolist()
             }
             doc_set=''
         else:
