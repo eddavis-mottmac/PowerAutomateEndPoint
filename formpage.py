@@ -17,6 +17,7 @@ st.set_page_config(
 st.image("logo.jpg", width=300)
 
 st.title("LWR – Document Submission Request")
+st.write("*The OCRA accronym used throughout this form stands for Originator/Checker/Reviewer/Approver")
 
 # Main container
 with st.container():
@@ -44,7 +45,7 @@ with st.container():
     st.subheader("4) Reason for Issue*")
     if 'reason_for_issue' not in st.session_state:
         st.session_state.reason_for_issue = "S2 (For information) - Document will not be reviewed by client"
-    reason_for_issue = st.radio("Please choose one option for the whole package. If you need to include supporting files for information, you will be able to specify this later in the form:", ("S2 (For information) - Used to begin co-authoring DCO submission documents", "S5 – (For Client Review & Acceptance)"),
+    reason_for_issue = st.radio("Please choose one option for the whole package. If you need to include supporting files for information, you will be able to specify this later in the form:", ("S2 (For information) - Document will not be formally reviewed by client", "S5 – (For Client Review & Acceptance)"),
     index=1
     )
 
@@ -59,20 +60,20 @@ with st.container():
         st.write("Please add the details of the documents you are submitting:")
         doc_df = pd.DataFrame(
             [
-            {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-000000', 'Document Title': 'Example Document - Please Replace line', 'Link to Native File': 'https://www.example.com/', 'Digital CRAV Completed': False, 'Link to PDF (Use Native File Link if N/A)': 'https://www.example.com/'}
+            {'Document Number': 'J698-JMM-XXXX-XXXX-XX-XX-000000', 'Document Title': 'Example Document - Please Replace line', 'Link to Native File': 'https://www.example.com/', 'Digital OCRA* Recorded': False, 'Link to PDF (Use Native File Link if N/A)': 'https://www.example.com/'}
         ]
         )
         doc_edited_df = st.data_editor(doc_df, num_rows="dynamic", column_config={
             "Link to Native File": st.column_config.LinkColumn(
                 "Link to Native File",
-                help="Link to the native file e.g. the word document file. This must have completed digital CRAV",
+                help="Link to the native file e.g. the word document file. This must have completed digital OCRA*",
                 validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
                 max_chars=255,
                 display_text=r"https://(.*?)\.streamlit\.app"
             ),
             "Link to PDF (Use Native File Link if N/A)": st.column_config.LinkColumn(
                 "Link to PDF (Use Native File Link if N/A)",
-                help="Link to a PDF'd version of the native file, this is not required to be CRAV'd",
+                help="Link to a PDF'd version of the native file, this is not required to be undergo OCRA*",
                 validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
                 max_chars=255,
                 display_text=r"https://(.*?)\.streamlit\.app"
@@ -86,23 +87,23 @@ with st.container():
 
 
         # Supporting Documents
-        st.write("Include details of supporting documents within your main document, such as PEIR maps within the PEIR or calculations within the appendix of a report. These need to be CRAV'd but will only be issued to the client at S2 (For Information):")
+        st.write("Include details of supporting documents within your main document, such as PEIR maps within the PEIR or calculations within the appendix of a report. These need to be fully OCRA*'d but will only be issued to the client at S2 (For Information):")
         sup_doc_df = pd.DataFrame(
             [
-            {'Document Number': '', 'Document Title': '', 'Link to Native File': '', 'Digital CRAV Completed': False, 'Link to PDF (Use Native File Link if N/A)': ''}
+            {'Document Number': '', 'Document Title': '', 'Link to Native File': '', 'Digital OCRA* Recorded': False, 'Link to PDF (Use Native File Link if N/A)': ''}
         ]
         ).iloc[1:].reset_index(drop=True)
         sup_doc_edited_df = st.data_editor(sup_doc_df, num_rows="dynamic", column_config={
             "Link to Native File": st.column_config.LinkColumn(
                 "Link to Native File",
-                help="Link to the native file e.g. the word document file. This must have completed digital CRAV",
+                help="Link to the native file e.g. the word document file. This must have completed digital OCRA*",
                 validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
                 max_chars=255,
                 display_text=r"https://(.*?)\.streamlit\.app"
             ),
             "Link to PDF (Use Native File Link if N/A)": st.column_config.LinkColumn(
                 "Link to PDF (Use Native File Link if N/A)",
-                help="Link to a PDF'd version of the native file for Document Control to submit with the native file. This is not required to be CRAV'd",
+                help="Link to a PDF'd version of the native file for Document Control to submit with the native file. This is not required to be OCRA*'d",
                 validate=r"^https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+",
                 max_chars=255,
                 display_text=r"https://(.*?)\.streamlit\.app"
@@ -141,7 +142,7 @@ with st.container():
     
     url = r"https://app.powerbi.com/groups/me/apps/64f8028b-7510-4069-8b8d-f3ba70f53d38/reports/e095f418-8cfd-4504-b8d6-54d3cf7ea9af/c47fc146c7a267925009?ctid=a2bed0c4-5957-4f73-b0c2-a811407590fb&experience=power-bi&bookmarkGuid=b12e777100e1567d8ccc"
     # List of checks
-    items = [f"All listed document numbers are registered in [MIDP](%s):" % url, 'All listed documents have successfully passed the checker-reviewer-approver workflow in ProjectWise', 'The names listed for CRAV within all listed documents match those in the digital workflow', 'All listed documents reference the correct revision throughout the document', 'All documents listed have the correct security classification', 'All listed documents (exluding models/drawings) headers contain the correct document number and revision', 'All listed documents (exclusing models/drawings) footers contain the correct document title, security classification and page number']
+    items = [f"All listed document numbers are registered in [MIDP](%s):" % url, 'All listed documents have successfully passed the checker-reviewer-approver workflow in ProjectWise', 'The names listed for OCRA* within all listed documents match those in the digital workflow', 'All listed documents reference the correct revision throughout the document', 'All documents listed have the correct security classification', 'All listed documents (exluding models/drawings) headers contain the correct document number and revision', 'All listed documents (exclusing models/drawings) footers contain the correct document title, security classification and page number']
 
     
     # Create checkboxes for each item
@@ -173,8 +174,8 @@ if st.button("Submit"):
     if not reason_for_issue:
         errors.append("Question 4: Reason for Issue is required.")
 
-    if any(not x for x in doc_edited_df['Digital CRAV Completed'].tolist()):
-        errors.append("Question 5: All Documents for issue must have Digital CRAV Completed")
+    if any(not x for x in doc_edited_df['Digital OCRA* Recorded'].tolist()):
+        errors.append("Question 5: All Documents for issue must have Digital OCRA* Completed")
     if len(table_edited_df)==0:
         errors.append("Question 6: At least one email address is required in the Distribution List.")
     if not len(selected_items) == 7:
