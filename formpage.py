@@ -4,6 +4,9 @@ import re
 from importrequests import *
 
 
+midp_url = st.secrets["endpoint"]["midp_url"]
+
+
 
 # Set the page configuration
 st.set_page_config(
@@ -140,9 +143,8 @@ with st.container():
     # Table 1   
     st.subheader("7) Please confirm you have completed the necessary Quality Assurance checks*")
     
-    url = r"https://app.powerbi.com/groups/me/apps/64f8028b-7510-4069-8b8d-f3ba70f53d38/reports/e095f418-8cfd-4504-b8d6-54d3cf7ea9af/c47fc146c7a267925009?ctid=a2bed0c4-5957-4f73-b0c2-a811407590fb&experience=power-bi&bookmarkGuid=b12e777100e1567d8ccc"
     # List of checks
-    items = [f"All listed document numbers are registered in [MIDP](%s):" % url, 'All listed documents have successfully passed the checker-reviewer-approver workflow in ProjectWise', 'The names listed for OCRA* within all listed documents match those in the digital workflow', 'All listed documents reference the correct revision throughout the document', 'All documents listed have the correct security classification', 'All listed documents (exluding models/drawings) headers contain the correct document number and revision', 'All listed documents (exclusing models/drawings) footers contain the correct document title, security classification and page number']
+    items = [f"All listed document numbers are registered in [MIDP](%s):" % midp_url, 'All listed documents have successfully passed the checker-reviewer-approver workflow in ProjectWise', 'The names listed for OCRA* within all listed documents match those in the digital workflow', 'All listed documents reference the correct revision throughout the document', 'All documents listed have the correct security classification', 'All listed documents (exluding models/drawings) headers contain the correct document number and revision', 'All listed documents (exclusing models/drawings) footers contain the correct document title, security classification and page number']
 
     
     # Create checkboxes for each item
@@ -173,9 +175,9 @@ if st.button("Submit"):
         errors.append("Question 3: Submission Title is required.")
     if not reason_for_issue:
         errors.append("Question 4: Reason for Issue is required.")
-
-    if any(not x for x in doc_edited_df['Digital OCRA* Recorded'].tolist()):
-        errors.append("Question 5: All Documents for issue must have Digital OCRA* Completed")
+    if CDE == "List each document individually below":
+        if any(not x for x in doc_edited_df['Digital OCRA* Recorded'].tolist()):
+            errors.append("Question 5: All Documents for issue must have Digital OCRA* Completed")
     if len(table_edited_df)==0:
         errors.append("Question 6: At least one email address is required in the Distribution List.")
     if not len(selected_items) == 7:
